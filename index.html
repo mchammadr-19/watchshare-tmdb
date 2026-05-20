@@ -435,7 +435,8 @@
                     img.src = `${TMDB_IMAGE_BASE}${posterToUse}?canvas=true`;
                     await new Promise(r => { img.onload = r; img.onerror = r; });
                     if (img.complete) {
-                        const pw = 640, ph = 960, px = (canvas.width - pw) / 2, py = 280;
+                        // Hasil render diturunkan ke posisi aslinya (py = 280) agar seimbang
+                        const pw = 640, ph = 960, px = (canvas.width - pw) / 2, py = 280; 
                         const radius = 45; 
                         
                         // Main Poster Body
@@ -460,6 +461,7 @@
                     const lineHeight = fontSize + 12;
                     const totalHeight = lines.length * lineHeight;
                     
+                    // Hasil render diturunkan kembali ke posisi aslinya (1425) agar seimbang dengan poster yang turun
                     let currentY = 1425 - (totalHeight / 2); 
                     if (lines.length > 1) {
                         currentY += 35; // Shift down for multi-line titles as requested
@@ -796,7 +798,7 @@
                                     <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: `linear-gradient(to bottom, rgba(${hexToRgb(bgColor)}, ${bgOpacity * 0.1}), rgba(${hexToRgb(bgColor)}, ${bgOpacity}))` }}></div>
                                     
                                     <div className="absolute inset-0 flex flex-col items-center z-[2]">
-                                        <div className="absolute top-[14.58%] left-1/2 -translate-x-1/2 w-[59.25%] aspect-[2/3] shrink-0 overflow-visible">
+                                        <div className="absolute top-[12.5%] left-1/2 -translate-x-1/2 w-[59.25%] aspect-[2/3] shrink-0 overflow-visible"> {/* Posisi preview tetap di atas (12.5%) */}
                                             <div className="w-full h-full overflow-hidden border border-white/15 shadow-2xl" style={{ borderRadius: '4.17cqw' }}>
                                                 <img src={`${TMDB_IMAGE_BASE}${activePoster}`} className="w-full h-full object-cover transition-all" />
                                             </div>
@@ -815,7 +817,7 @@
                                         </div>
                                         
                                         {/* PREVIEW UI MATCHING RENDER - REFINED GAPS */}
-                                        <div className="absolute top-[74.22%] w-full flex flex-col items-center">
+                                        <div className="absolute top-[71.25%] w-full flex flex-col items-center"> {/* Posisi preview teks tetap di atas (71.25%) */}
                                             {/* Container Title yang Ter-pusat */}
                                             <div className="flex flex-col items-center text-center max-w-[85%] -translate-y-1/2">
                                                 {previewLines.map((line, idx) => (
@@ -914,7 +916,7 @@
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render((<App />));
     </script>
 </body>
 </html>
