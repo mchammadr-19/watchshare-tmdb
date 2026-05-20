@@ -122,7 +122,7 @@
         };
 
         const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
-        const STORY_LOGO_URL = "https://raw.githubusercontent.com/mchammadr-19/watchshare/main/render.png";
+        const STORY_LOGO_URL = "logo.png";
 
         const hexToRgb = (hex) => {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -163,6 +163,7 @@
             const [showIOSInstructions, setShowIOSInstructions] = useState(false);
             const [isInstalled, setIsInstalled] = useState(false);
             const [installButtonPermanentlyHidden, setInstallButtonPermanentlyHidden] = useState(false);
+            const [showDonateModal, setShowDonateModal] = useState(false);
 
             const canvasRef = useRef(null);
             const suggestionRef = useRef(null);
@@ -392,7 +393,7 @@
                     img.src = `${TMDB_IMAGE_BASE}${posterToUse}?canvas=true`;
                     await new Promise(r => { img.onload = r; img.onerror = r; });
                     if (img.complete) {
-                        const pw = 640, ph = 960, px = (canvas.width - pw) / 2, py = 200;
+                        const pw = 640, ph = 960, px = (canvas.width - pw) / 2, py = 280;
                         const radius = 45; 
                         
                         // Main Poster Body
@@ -417,7 +418,7 @@
                     const lineHeight = fontSize + 12;
                     const totalHeight = lines.length * lineHeight;
                     
-                    let currentY = 1355 - (totalHeight / 2); 
+                    let currentY = 1425 - (totalHeight / 2); 
                     if (lines.length > 1) {
                         currentY += 35; // Shift down for multi-line titles as requested
                     }
@@ -469,9 +470,9 @@
                     attrImg.src = STORY_LOGO_URL;
                     await new Promise(r => { attrImg.onload = r; attrImg.onerror = r; });
                     if (attrImg.complete) {
-                        const aWidth = 280, aHeight = (attrImg.height / attrImg.width) * aWidth;
-                        ctx.save(); ctx.globalAlpha = 0.2; 
-                        ctx.drawImage(attrImg, (canvas.width - aWidth) / 2, 1780 - (aHeight / 2), aWidth, aHeight); ctx.restore();
+                        const aWidth = 180, aHeight = (attrImg.height / attrImg.width) * aWidth;
+                        ctx.save(); ctx.globalAlpha = 0.1; 
+                        ctx.drawImage(attrImg, (canvas.width - aWidth) / 2, 1800 - (aHeight / 2), aWidth, aHeight); ctx.restore();
                     }
 
                     const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.95));
@@ -566,12 +567,9 @@
                             <img src="header.png" alt="WatchShare" className="h-6 sm:h-8 w-auto object-contain" />
                         </div>
                         <div className="flex items-center gap-2">
-                            <a href="https://saweria.co/mchammadr" target="_blank" className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-500 rounded-full border border-yellow-500/20 transition-all text-[10px] sm:text-xs font-bold">
-                                <Icon name="heart" size={14} className="fill-yellow-500" /> <span>Saweria</span>
-                            </a>
-                            <a href="https://ko-fi.com/mchammadr_" target="_blank" className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-pink-600/10 hover:bg-pink-600/20 text-pink-400 rounded-full border border-pink-500/20 transition-all text-[10px] sm:text-xs font-bold">
-                                <Icon name="heart" size={14} className="fill-pink-400" /> <span>Ko-fi</span>
-                            </a>
+                            <button onClick={() => setShowDonateModal(true)} className="flex items-center gap-2 px-3.5 sm:px-4 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-500 rounded-full border border-red-500/20 transition-all text-xs font-bold">
+                                <Icon name="heart" size={14} className="fill-red-500 animate-pulse" /> <span>Donate</span>
+                            </button>
                         </div>
                     </header>
 
@@ -705,6 +703,55 @@
                         </div>
                     )}
 
+                    {showDonateModal && (
+                        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-end sm:items-center justify-center p-4">
+                            <div className="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-3xl p-8 animate-slide-up shadow-2xl relative">
+                                <button onClick={() => setShowDonateModal(false)} className="absolute top-4 right-4 text-white/40 hover:text-white"><Icon name="x" size={24} /></button>
+                                <div className="flex flex-col items-center text-center gap-6 pt-4">
+                                    <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center border border-red-500/20 mb-2">
+                                        <Icon name="heart" size={32} className="text-red-500 fill-red-500 animate-pulse" />
+                                    </div>
+                                    <h3 className="text-xl font-bold tracking-tight">Support WatchShare</h3>
+                                    <p className="text-white/60 text-sm leading-relaxed">If you enjoy using this tool, consider supporting development with a donation:</p>
+                                    
+                                    <div className="w-full space-y-4 mt-2">
+                                        <a 
+                                            href="https://saweria.co/mchammadr" 
+                                            target="_blank" 
+                                            onClick={() => setShowDonateModal(false)}
+                                            className="flex items-center justify-between bg-yellow-600/10 hover:bg-yellow-600/20 p-4 rounded-xl border border-yellow-500/20 transition-all group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-yellow-500 text-black flex items-center justify-center font-bold text-xs shrink-0">ID</div>
+                                                <div className="text-left">
+                                                    <div className="text-sm font-bold text-yellow-500">Saweria</div>
+                                                    <div className="text-[10px] text-white/40">Indonesia Payout</div>
+                                                </div>
+                                            </div>
+                                            <span className="text-xs text-yellow-500 font-bold group-hover:translate-x-1 transition-transform">→</span>
+                                        </a>
+
+                                        <a 
+                                            href="https://ko-fi.com/mchammadr_" 
+                                            target="_blank" 
+                                            onClick={() => setShowDonateModal(false)}
+                                            className="flex items-center justify-between bg-pink-600/10 hover:bg-pink-600/20 p-4 rounded-xl border border-pink-500/20 transition-all group"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shrink-0">INT</div>
+                                                <div className="text-left">
+                                                    <div className="text-sm font-bold text-pink-400">Ko-fi</div>
+                                                    <div className="text-[10px] text-white/40">International Payout</div>
+                                                </div>
+                                            </div>
+                                            <span className="text-xs text-pink-400 font-bold group-hover:translate-x-1 transition-transform">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {selectedItem && (
                         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex flex-col items-center justify-start p-4 overflow-y-auto">
                             <div className="absolute top-6 inset-x-6 flex justify-between items-center z-50">
@@ -720,7 +767,7 @@
                                     <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: `linear-gradient(to bottom, rgba(${hexToRgb(bgColor)}, ${bgOpacity * 0.1}), rgba(${hexToRgb(bgColor)}, ${bgOpacity}))` }}></div>
                                     
                                     <div className="absolute inset-0 flex flex-col items-center z-[2]">
-                                        <div className="absolute top-[10.41%] w-[59.25%] aspect-[2/3] shrink-0">
+                                        <div className="absolute top-[14.58%] left-1/2 -translate-x-1/2 w-[59.25%] aspect-[2/3] shrink-0">
                                             <div className="w-full h-full overflow-hidden border border-white/15 shadow-2xl" style={{ borderRadius: '4.17cqw' }}>
                                                 <img src={`${TMDB_IMAGE_BASE}${activePoster}`} className="w-full h-full object-cover transition-all" />
                                             </div>
@@ -747,7 +794,7 @@
                                         </div>
                                         
                                         {/* PREVIEW UI MATCHING RENDER - REFINED GAPS */}
-                                        <div className="absolute top-[68.5%] w-full flex flex-col items-center">
+                                        <div className="absolute top-[74.22%] w-full flex flex-col items-center">
                                             {/* Container Title yang Ter-pusat */}
                                             <div className="flex flex-col items-center text-center max-w-[85%] -translate-y-1/2">
                                                 {previewLines.map((line, idx) => (
